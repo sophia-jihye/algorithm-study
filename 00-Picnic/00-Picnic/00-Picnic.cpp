@@ -16,16 +16,15 @@ list<int> make_list_sub(int pair1, int pair2, list<int> whole_students) {
 	return list_sub;
 }
 
-int calculate(const bool are_friends[][10], list<int> &students, int total_num) {
-	int ret;
-	ret = 0;
+int calculate(const bool are_friends[][10], list<int> students, int total_num) {
 
 	// 모든 학생들에 대해 짝을 구하게 되면 1을 리턴하고 종료
 	if (students.size() == 0) {
-		cout << "~~~1을 리턴" << endl;
 		return 1;
 	}
 	
+	int ret = 0;
+
 	// 파라미터로 받은 학생들 중 첫번째 학생을 우선 고름
 	int first_target;
 	first_target = students.front();
@@ -33,12 +32,11 @@ int calculate(const bool are_friends[][10], list<int> &students, int total_num) 
 	// 이전에 선택된 적이 없는 학생들 중에서 첫번째 짝을 고름
 	int first_target_pair;
 	list<int> list_sub;
-	bool flag;
-	flag = false;
 
 	for (int j = first_target + 1; j < total_num; j++) {
-		if (are_friends[first_target][j]) {
-			flag = true;
+		list<int>::iterator it = find(students.begin(), students.end(), j);
+
+		if (it != students.end() && are_friends[first_target][j]) {
 			first_target_pair = j;
 
 			// 한쌍을 찾은 경우, 다시 또 다른 쌍을 찾기 위해 선택된 사람들을 제외하고 다시 학생들 list를 구성함
@@ -48,21 +46,6 @@ int calculate(const bool are_friends[][10], list<int> &students, int total_num) 
 			ret += calculate(are_friends, list_sub, total_num);
 		}
 	}
-
-	if (flag == false) {
-		// 짝을 아예 찾지 못하는 경우 0을 리턴하고 종료
-		return 0;
-	} 
-
-	return ret;
-}
-
-int ncases(const bool are_friends[][10], list<int> &whole_students) {
-	int ret;
-	ret = 0;
-	
-	ret = calculate(are_friends, whole_students, whole_students.size());
-	
 	return ret;
 }
 
@@ -83,7 +66,7 @@ int main() {
 			are_friends[a][b] = true;
 			are_friends[b][a] = true;
 		}
-		cout << ncases(are_friends, whole_students) << endl;
+		cout << calculate(are_friends, whole_students, whole_students.size()) << endl;
 	}
 	
 	system("pause");
