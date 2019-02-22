@@ -8,41 +8,51 @@ using namespace std;
 
 list<int> make_list_sub(int pair1, int pair2, list<int> whole_students) {
 	list<int> list_sub;
-	
 	for (int item : whole_students) {
 		if (item != pair1 && item != pair2) {
 			list_sub.push_back(item);
 		}
 	}
-
 	return list_sub;
 }
 
-bool is_complete(const bool are_friends[][10], list<int> &students) {
-	bool ret;
-	ret = false;
+int calculate(const bool are_friends[][10], list<int> &students, int total_num) {
+	int ret;
+	ret = 0;
 
-	if (students.size() < 1) {
-		return true;
+	// 모든 학생들에 대해 짝을 구하게 되면 1을 리턴하고 종료
+	if (students.size() == 0) {
+		cout << "~~~1을 리턴" << endl;
+		return 1;
 	}
 	
-	int i;
-	i = students.front();
+	// 파라미터로 받은 학생들 중 첫번째 학생을 우선 고름
+	int first_target;
+	first_target = students.front();
 
+	// 이전에 선택된 적이 없는 학생들 중에서 첫번째 짝을 고름
+	int first_target_pair;
 	list<int> list_sub;
-	for (int j = i + 1; j < students.size(); j++) {
-		if (are_friends[i][j]) {
-			list_sub = make_list_sub(i, j, students);
-			ret = is_complete(are_friends, list_sub);
-			//whole_students.remove(i);
-			//whole_students.remove(j);
-			//ret += 1;
-			//ret += ncases(are_friends, not_taken);
-			//j = a;
-			//not_taken.push_back(j);
-			//not_taken.sort();
+	bool flag;
+	flag = false;
+
+	for (int j = first_target + 1; j < total_num; j++) {
+		if (are_friends[first_target][j]) {
+			flag = true;
+			first_target_pair = j;
+
+			// 한쌍을 찾은 경우, 다시 또 다른 쌍을 찾기 위해 선택된 사람들을 제외하고 다시 학생들 list를 구성함
+			list_sub = make_list_sub(first_target, first_target_pair, students);
+
+			// 남은 학생들에 대해 짝을 고를 수 있는지 재귀적으로 확인함
+			ret += calculate(are_friends, list_sub, total_num);
 		}
 	}
+
+	if (flag == false) {
+		// 짝을 아예 찾지 못하는 경우 0을 리턴하고 종료
+		return 0;
+	} 
 
 	return ret;
 }
@@ -50,15 +60,8 @@ bool is_complete(const bool are_friends[][10], list<int> &students) {
 int ncases(const bool are_friends[][10], list<int> &whole_students) {
 	int ret;
 	ret = 0;
-
-	//int total_num;
-	//total_num = whole_students.size();
 	
-	//for (int i = 0; i < total_num; i++) {
-		if (is_complete(are_friends, whole_students)) {
-			ret += 1;
-		}
-	//}
+	ret = calculate(are_friends, whole_students, whole_students.size());
 	
 	return ret;
 }
