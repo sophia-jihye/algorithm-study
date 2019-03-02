@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include <iostream>
 #include <list>
+#include <algorithm>
 using namespace std;
 
 list<int> make_list_sub(int pair1, int pair2, list<int> whole_students) {
@@ -32,7 +33,6 @@ int calculate(const bool are_friends[][10], list<int> students, int total_num) {
 
 	for (int j = first_target + 1; j < total_num; j++) {
 		list<int>::iterator it = find(students.begin(), students.end(), j);
-
 		if (it != students.end() && are_friends[first_target][j]) {
 			first_target_pair = j;
 
